@@ -1,16 +1,20 @@
 # Yandex Panorama Downloader (ypano) 🌐📸
 
 [![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
+[![OS: Windows | Linux | macOS](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blue)](https://github.com/B10Sreg/yandex-panorama-downloader)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Высокоскоростной инструмент командной строки (CLI) и Python-библиотека для скачивания **360° сферических эквидистантных панорам Яндекс Карт** в максимальном исходном качестве (до **14K / 95 Мп**) без лишних тяжеловесных зависимостей (без PyTorch и CUDA).
+Высокоскоростной кроссплатформенный инструмент командной строки (CLI) и Python-библиотека для скачивания **360° сферических эквидистантных панорам Яндекс Карт** в максимальном исходном качестве (до **14K / 95 Мп**) без лишних тяжеловесных зависимостей (без PyTorch и CUDA).
+
+Полная поддержка **Windows** (PowerShell / CMD / Windows Terminal), **Linux** и **macOS**.
 
 ---
 
 ## ✨ Возможности
 
 - 🚀 **Максимальная скорость**: Асинхронное параллельное скачивание тайлов через `aiohttp` (панорама 45 Мп скачивается и сшивается менее чем за **2 секунды**).
+- 💻 **Кроссплатформенность из коробки**: На Windows поддерживается UTF-8 консоль, защита от запрещённых символов в путях файлов (`:`, `*`, `?` и др.), стабильный `WindowsSelectorEventLoopPolicy` и готовые лаунчеры `ypano.bat` / `ypano.ps1`.
 - 🧭 **Умный парсер**: Принимает любые ссылки Яндекс Карт (десктоп, мобильные, организации), координаты (`широта, долгота`) или прямые ID панорам.
 - 🥽 **Готовность к VR и 360-просмотрщикам**: Автоматически вшивает метаданные **Google Photo Sphere (GPano XMP)** и **EXIF GPS**, благодаря чему панорамы сразу корректно распознаются в VR-шлемах, Varwin XR, Facebook и веб-плеерах.
 - 🎨 **Красивый интерфейс**: Информативные таблицы, индикаторы процесса и прогресс-бары на базе `rich`.
@@ -34,11 +38,21 @@ pip install yandex-panorama-downloader[metadata]
 ```
 
 ### Из исходного кода:
+
+**Linux / macOS:**
 ```bash
 git clone https://github.com/B10Sreg/yandex-panorama-downloader.git
 cd yandex-panorama-downloader
 pip install -e .
 ```
+
+**Windows (PowerShell или CMD):**
+```powershell
+git clone https://github.com/B10Sreg/yandex-panorama-downloader.git
+cd yandex-panorama-downloader
+pip install -e .
+```
+*(Также в папке репозитория доступны скрипты быстрого запуска без установки: `ypano.bat` и `ypano.ps1`)*
 
 ---
 

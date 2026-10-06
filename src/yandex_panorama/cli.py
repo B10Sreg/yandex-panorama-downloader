@@ -8,6 +8,7 @@ import asyncio
 import argparse
 from typing import List, Optional
 
+import re
 import aiohttp
 from rich.console import Console
 from rich.table import Table
@@ -28,7 +29,26 @@ from .url_parser import parse_target, TargetInfo
 from .api import find_panorama_async, find_panorama_by_id_async
 from .downloader import download_panorama_async
 
-console = Console()
+# Настройка UTF-8 для Windows консоли (cmd.exe / PowerShell)
+if sys.platform == "win32":
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+            sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+    # WindowsSelectorEventLoopPolicy предотвращает RuntimeError: Event loop is closed в aiohttp на Windows
+    try:
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    except Exception:
+        pass
+
+console = Console(highlight=False)
+
+
+def sanitize_filename(filename: str) -> str:
+    """Очищает имя файла от запрещённых символов Windows: \\ / : * ? \" < > |"""
+    return re.sub(r'[\\/*?:"<>|]', "_", filename)
 
 
 def display_banner():
@@ -110,14 +130,16 @@ async def process_target(
     actual_zoom = max(0, min(zoom, len(pano.image_sizes) - 1))
     img_size = pano.image_sizes[actual_zoom]
 
-    default_filename = f"panorama_{pano.id}_{img_size.x}x{img_size.y}.jpg"
+    default_filename = sanitize_filename(f"panorama_{pano.id}_{img_size.x}x{img_size.y}.jpg")
     if not output_arg:
         output_path = default_filename
     elif os.path.isdir(output_arg) or output_arg.endswith("/") or output_arg.endswith("\\"):
         os.makedirs(output_arg, exist_ok=True)
         output_path = os.path.join(output_arg, default_filename)
     else:
-        output_path = output_arg
+        out_dir = os.path.dirname(os.path.abspath(output_arg))
+        base_name = sanitize_filename(os.path.basename(output_arg))
+        output_path = os.path.join(out_dir, base_name)
 
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
 

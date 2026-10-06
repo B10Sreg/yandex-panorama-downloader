@@ -41,3 +41,17 @@ def test_parse_raw_id():
     assert info.id == pano_id
     assert info.lat is None
     assert info.lon is None
+
+
+def test_sanitize_filename_windows_illegal_chars():
+    from yandex_panorama.cli import sanitize_filename
+    bad_name = 'pano:test*file?"name<foo>bar|baz.jpg'
+    clean = sanitize_filename(bad_name)
+    assert clean == 'pano_test_file__name_foo_bar_baz.jpg'
+    assert ":" not in clean
+    assert "*" not in clean
+    assert "?" not in clean
+    assert "<" not in clean
+    assert ">" not in clean
+    assert "|" not in clean
+
